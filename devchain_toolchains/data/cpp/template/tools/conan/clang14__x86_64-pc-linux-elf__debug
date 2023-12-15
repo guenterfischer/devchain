@@ -1,0 +1,12 @@
+{% set CC = "/usr/bin/clang-14" %}
+{% set CXX = "/usr/bin/clang++-14" %}
+
+[settings]
+os=Linux
+arch=x86_64
+compiler=clang
+compiler.version=14
+build_type=Debug
+
+[conf]
+tools.build:compiler_executables={'c': '{{ CC }}', 'cpp': '{{ CXX }}' }

@@ -195,10 +195,18 @@ def create(
         toolchain: Annotated[
             str,
             typer.Option(
+                "--toolchain", "-t",
                 help='Toolchain to be created',
                 autocompletion=complete_create_toolchain
             )
-        ]
+        ],
+        force: Annotated[
+            bool,
+            typer.Option(
+                "--force", "-f",
+                help='Force creation even if directory is not empty'
+            )
+        ] = False
 ):
     '''
     Creates a project template in the current directory.
@@ -209,7 +217,7 @@ def create(
 
     if toolchain == 'cpp':
         cpp = CppToolchain(path)
-        result = cpp.create()
+        result = cpp.create(force)
     else:
         print('[bold red]:boom: Invalid toolchain ({})'.format(toolchain))
         return
@@ -240,10 +248,18 @@ def build(
         settings: Annotated[
             str,
             typer.Option(
+                "--settings", "-s",
                 help='Settings to be used',
                 autocompletion=complete_build_settings
             )
-        ]
+        ],
+        verbose: Annotated[
+            bool,
+            typer.Option(
+                "--verbose", "-v",
+                help='Enable verbose output'
+            )
+        ] = False
 ):
     '''
     Builds the project in the current diretory.
@@ -252,7 +268,7 @@ def build(
 
     path = os.path.abspath(os.getcwd())
     toolchain = get_toolchain(path)
-    result = toolchain.build(settings)
+    result = toolchain.build(settings, verbose=verbose)
 
     ts_end = datetime.datetime.now()
 
@@ -264,10 +280,18 @@ def run(
         tool: Annotated[
             str,
             typer.Option(
+                "--tool", "-t",
                 help='Tool to be run',
                 autocompletion=complete_run_tool
             )
-        ]
+        ],
+        verbose: Annotated[
+            bool,
+            typer.Option(
+                "--verbose", "-v",
+                help='Enable verbose output'
+            )
+        ] = False
 ):
     '''
     Runs the specified tool, e.g. static code analysis or unit test.
@@ -276,7 +300,7 @@ def run(
 
     path = os.path.abspath(os.getcwd())
     toolchain = get_toolchain(path)
-    result = toolchain.run(tool)
+    result = toolchain.run(tool, verbose=verbose)
 
     ts_end = datetime.datetime.now()
 
